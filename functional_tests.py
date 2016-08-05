@@ -1,42 +1,61 @@
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 import unittest
 
+
 class NewVisitorTest(unittest.TestCase):
-	
-	def setUp(self):
-		self.browser = webdriver.Firefox()
-		self.browser.implicitly_wait(3)
-		
-	def tearDown(self):
-		self.browser.quit()
-		
-	def test_can_start_a_list_and_retrieve_it_later(self):
-		# Edyta dowiedziała się o nowej, wspaniałej aplikacji w postacji listy rzeczy do zrobienia.
-		# Postanowiła więc przejść na stronę główną tej aplikacji.
-		self.browser.get('http://localhost:8000')
-		
-		# Zwróciła uwagę, że tytuł strony i nagłównek zawierają słowo Lsty.
-		self.assertIn('Listy', self.browser.title)
-		self.fail('Zakończenie testu!')
-		
-		# Od razu zostaje zachęcona, aby wpisać rzecz do zrobienia.
-		
-		# W polu tekstowym wpisała "Kupić pawie pióra" (hobby Edyty polega na tworzeniu ozdobnych przynęt).
-		
-		# Po naciśnięciu klawisza Enter strona została uaktualniona i wyświetla.
-		# "1. Kupić pawie pióra" jako element listy rzeczy do zrobienia.
-		
-		# Na stronie nadal znajduje się pole tekstowe zachęcające do podania kolejnego zadania.
-		# Edyta wpisała "Użyć pawich piór do zrobienia przynęty" (Edyta jest niezwykle skrupulatna).
-		
-		# Strona została ponownie uaktualniona i teraz wyświetla dwa elementy na liście rzeczy do zrobienia.
-		
-		# Edyta była ciekawa, czy witryna zapamięta jej listę. Zwróciła uwagę na wygenerowany dla niej 
-		# unikatowy adres URL, obok którego znajduje się pewien tekst z wyjaśnieniem.
-		
-		# Przechodzi pod podany adres URL i widzi wyświetloną swoją listę rzeczy do zrobienia.
-		
-		#Usatysfakcjonowana kładzie się spać.
-		
+    def setUp(self):
+        self.browser = webdriver.Firefox()
+        self.browser.implicitly_wait(3)
+
+    def tearDown(self):
+        self.browser.quit()
+
+    def test_can_start_a_list_and_retrieve_it_later(self):
+        # Edith has heard about a cool new online to-do app. She goes
+        # to check out its homepage
+        self.browser.get('http://localhost:8000')
+
+        # She notices the page title and header mention to-do lists
+        self.assertIn('To-Do', self.browser.title)
+        header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('To-Do', header_text)
+
+        # She is invited to enter a to-do item straight away
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertEqual(
+            inputbox.get_attribute('placeholder'),
+            'Enter a to-do item'
+        )
+
+        # She types "Buy peacock feathers" into a text box (Edith's hobby
+        # is tying fly-fishing lures)
+        inputbox.send_keys('Buy peacock feathers')
+
+        # When she hits enter, she is taken to a new URL,
+        # and now the page lists "1: Buy peacock feathers" as an item in a
+        # to-do list table
+        inputbox.send_keys(Keys.ENTER)
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertTrue(
+            any(row.text == '1: Buy peacock feathers' for row in rows)
+        )
+
+        # There is still a text box inviting her to add another item. She
+        # enters "Use peacock feathers to make a fly" (Edith is very
+        # methodical)
+        self.fail('Zakończenie testu')
+
+        # The page updates again, and now shows both items on her list
+
+        # Edith was curious if page saved her items.
+        # She pointed out generated for her unique URL,
+        # next to which is a text explanation.
+
+        # She goes to the URL displayed and sees her to-do list.
+
+        # Satisfied goes to sleep.
+
 if __name__ == '__main__':
-	unittest.main(warnings='ignore')
+    unittest.main(warnings='ignore')
