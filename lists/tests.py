@@ -15,16 +15,21 @@ class HomePageTest(TestCase):
 
     def test_home_page_returns_correct_html(self):
         request = HttpRequest()
+        request.method = 'POST'
+        request.POST['item_text'] = 'A new list item'
         response = home_page(request)
-        expected_html = render_to_string('home.html')
         response_html = response.content.decode()
-
         match = re.search(
             "((.|\n)*)<input type='hidden[^\/]*\/>((.|\n)*)",
             response_html
         )
         matched_groups = match.groups()
         response_html = str(matched_groups[0]) + str(matched_groups[2])
+
+        expected_html = render_to_string(
+            'home.html',
+            {'new_item_text': 'A new list item'}
+        )
 
         self.assertEqual(response_html, expected_html)
 
