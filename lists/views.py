@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from lists.models import Item
+from lists.models import List, Item
 
 
 def home_page(request):
@@ -12,5 +12,6 @@ def view_list(request):
 
 
 def new_list(request):
-    Item.objects.create(text=request.POST['item_text'])
+    list_of_items = List.objects.create()
+    Item.objects.create(text=request.POST['item_text'], list=list_of_items)
     return redirect('/lists/the-only-list-in-the-world/')
