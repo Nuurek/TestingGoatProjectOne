@@ -1,0 +1,11 @@
+branch-defaults:
+  master:
+    environment: TestingGoat-test
+    group_suffix: null
+global:
+  application_name: TestingGoat
+  default_ec2_keyname: TestingGoat
+  default_platform: Python 3.4
+  default_region: eu-central-1
+  profile: eb-cli
+  sc: git
