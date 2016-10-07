@@ -6,7 +6,10 @@ from django.template.loader import render_to_string
 
 from lists.views import home_page
 from lists.models import Item, List
-from lists.forms import ItemForm, EMPTY_ITEM_ERROR
+from lists.forms import (
+    DUPLICATE_ITEM_ERROR, EMPTY_ITEM_ERROR,
+    ExistingListItemForm, ItemForm
+)
 
 from unittest import skip
 
@@ -86,6 +89,12 @@ class ListViewTest(TestCase):
         self.post_invalid_input()
         self.assertEqual(Item.objects.count(), 0)
 
+    def test_displays_item_form(self):
+        list_of_items = List.objects.create()
+        response = self.client.get('/lists/%d/' % (list_of_items.id,))
+        self.assertIsInstance(response.context['form'], ExistingListItemForm)
+        self.assertContains(response, 'name="text"')
+
     def test_for_invalid_input_renders_list_template(self):
         response = self.post_invalid_input()
         self.assertEqual(response.status_code, 200)
@@ -93,13 +102,12 @@ class ListViewTest(TestCase):
 
     def test_for_invalid_input_passes_form_to_template(self):
         response = self.post_invalid_input()
-        self.assertIsInstance(response.context['form'], ItemForm)
+        self.assertIsInstance(response.context['form'], ExistingListItemForm)
 
     def test_for_invalid_input_shows_error_on_page(self):
         response = self.post_invalid_input()
         self.assertContains(response, escape(EMPTY_ITEM_ERROR))
 
-    @skip
     def test_duplicate_item_validation_errors_end_up_on_lists_page(self):
         list_of_items = List.objects.create()
         item = Item.objects.create(list=list_of_items, text="textey")
@@ -110,16 +118,10 @@ class ListViewTest(TestCase):
             }
         )
 
-        expected_error = escape("You've already got this on your list")
+        expected_error = escape(DUPLICATE_ITEM_ERROR)
         self.assertContains(response, expected_error)
         self.assertTemplateUsed(response, 'list.html')
         self.assertEqual(Item.objects.all().count(), 1)
-
-    def test_displays_item_form(self):
-        list_of_items = List.objects.create()
-        response = self.client.get('/lists/%d/' % (list_of_items.id,))
-        self.assertIsInstance(response.context['form'], ItemForm)
-        self.assertContains(response, 'name="text"')
 
 
 class NewListTest(TestCase):
