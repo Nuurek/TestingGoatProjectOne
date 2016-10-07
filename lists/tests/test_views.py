@@ -8,6 +8,8 @@ from lists.views import home_page
 from lists.models import Item, List
 from lists.forms import ItemForm, EMPTY_ITEM_ERROR
 
+from unittest import skip
+
 
 class HomePageTest(TestCase):
 
@@ -96,6 +98,22 @@ class ListViewTest(TestCase):
     def test_for_invalid_input_shows_error_on_page(self):
         response = self.post_invalid_input()
         self.assertContains(response, escape(EMPTY_ITEM_ERROR))
+
+    @skip
+    def test_duplicate_item_validation_errors_end_up_on_lists_page(self):
+        list_of_items = List.objects.create()
+        item = Item.objects.create(list=list_of_items, text="textey")
+        response = self.client.post(
+            '/lists/%d/' % (list_of_items.id),
+            data={
+                'text': 'textey'
+            }
+        )
+
+        expected_error = escape("You've already got this on your list")
+        self.assertContains(response, expected_error)
+        self.assertTemplateUsed(response, 'list.html')
+        self.assertEqual(Item.objects.all().count(), 1)
 
     def test_displays_item_form(self):
         list_of_items = List.objects.create()
