@@ -1,11 +1,19 @@
 from django.db import models
+from django.contrib import auth
 import uuid
+from django.utils.deprecation import CallableBool
+
+auth.signals.user_logged_in.disconnect(auth.models.update_last_login)
 
 
 class User(models.Model):
     email = models.EmailField(primary_key=True)
     REQUIRED_FIELDS = ()
     USERNAME_FIELD = 'email'
+
+    # To satisfy Django...
+    is_authenticated = CallableBool(None)
+    is_anonymous = CallableBool(None)
 
 
 class Token(models.Model):
