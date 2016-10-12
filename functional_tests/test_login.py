@@ -3,7 +3,7 @@ from django.core import mail
 
 from .base import FunctionalTest
 
-TEST_EMAIL = 'nurskijakub@gmail.com'
+TEST_EMAIL = 'test@example.com'
 SUBJECT = 'Your login link for SuperLists'
 
 
@@ -42,6 +42,10 @@ class LoginTest(FunctionalTest):
         self.browser.get(url)
 
         # She is logged in
-        self.browser.find_element_by_link_text('Log out')
-        navbar = self.browser.find_element_by_css_selector('.navbar')
-        self.assertIn(TEST_EMAIL, navbar.text)
+        self.assert_logged_in(email=TEST_EMAIL)
+
+        # Now she logs out
+        self.browser.find_element_by_link_text('Log out').click()
+
+        # She is logged out
+        self.assert_logged_out(email=TEST_EMAIL)
