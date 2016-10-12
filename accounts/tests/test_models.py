@@ -17,6 +17,10 @@ class UserModelTest(TestCase):
         request = self.client.request().wsgi_request
         auth.login(request, user) #should not raise
 
+    def test_email_is_primary_key(self):
+        user = User()
+        self.assertFalse(hasattr(user, 'id'))
+
 class TokenModelTest(TestCase):
 
     def test_links_user_with_auto_generated_uid(self):

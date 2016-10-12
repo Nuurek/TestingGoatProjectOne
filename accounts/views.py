@@ -3,12 +3,15 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.contrib import auth, messages
 from accounts.models import Token
+from superlists.settings import EMAIL_HOST_USER
 
 
 def login(request):
     uid = request.GET.get('token')
     user = auth.authenticate(uid=uid)
     if user:
+        user.is_anonymous = False
+        user.is_authenticated = True
         auth.login(request, user)
     return redirect('/')
 
@@ -23,7 +26,7 @@ def send_login_email(request):
     send_mail(
         'Your login link for SuperLists',
         message_body,
-        'noreply@superlists.com',
+        EMAIL_HOST_USER,
         [email],
     )
     messages.success(

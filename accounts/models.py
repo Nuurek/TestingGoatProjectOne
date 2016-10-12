@@ -12,8 +12,8 @@ class User(models.Model):
     USERNAME_FIELD = 'email'
 
     # To satisfy Django...
-    is_authenticated = CallableBool(None)
-    is_anonymous = CallableBool(None)
+    is_authenticated = CallableBool(False)
+    is_anonymous = CallableBool(True)
 
 
 class Token(models.Model):
