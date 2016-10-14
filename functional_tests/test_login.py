@@ -2,7 +2,7 @@ import os
 import imaplib
 import re
 import time
-import email
+from email import message_from_string as message_from_string
 from django.core import mail
 from .base import FunctionalTest
 
@@ -84,7 +84,7 @@ class LoginTest(FunctionalTest):
                                 encoding='utf8',
                                 errors='ignore'
                             )
-                            email_message = email.message_from_string(
+                            email_message = message_from_string(
                                 raw_email
                             )
                             email_subject = email_message['Subject']
