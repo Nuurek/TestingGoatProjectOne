@@ -1,4 +1,10 @@
-from accounts.models import Token, User
+from django.conf import settings
+from accounts.models import Token
+from django.contrib.auth import (
+    BACKEND_SESSION_KEY, SESSION_KEY, get_user_model
+)
+from django.contrib.sessions.backends.db import SessionStore
+User = get_user_model()
 
 
 class PasswordlessAuthenticationBackend(object):
@@ -17,3 +23,4 @@ class PasswordlessAuthenticationBackend(object):
             return User.objects.get(email=email)
         except User.DoesNotExist:
             return None
+            
