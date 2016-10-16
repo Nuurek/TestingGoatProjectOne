@@ -17,7 +17,7 @@ class LoginTest(FunctionalTest):
         # and notices a "Log in" section in the navbar for the first time
         # It's telling her to enter her email address, so she does
         if self.against_staging:
-            test_email = 'nurek95@gmail.com'
+            test_email = 'testing-goat@mailinator.com'
         else:
             test_email = 'example@example.com'
 
