@@ -13,13 +13,13 @@ class JSONResponseTest(TestCase):
 
     def test_view_responds_with_200_status_code(self):
         response = self.client.get(
-            '/rest-api/session_key/{}/'.format(TEST_MAIL),
+            '/rest/session_key/{}/'.format(TEST_MAIL),
         )
         self.assertEqual(response.status_code, 200)
 
     def test_view_responds_with_JSON(self):
         response = self.client.get(
-            '/rest-api/session_key/{}/'.format(TEST_MAIL),
+            '/rest/session_key/{}/'.format(TEST_MAIL),
         )
         self.assertEqual(
             response.__getitem__('Content-Type'),
@@ -28,7 +28,7 @@ class JSONResponseTest(TestCase):
 
     def test_view_returns_proper_session_key(self):
         response = self.client.get(
-            '/rest-api/session_key/{}/'.format(TEST_MAIL),
+            '/rest/session_key/{}/'.format(TEST_MAIL),
         )
         stream = BytesIO(response.content)
         data = JSONParser().parse(stream)

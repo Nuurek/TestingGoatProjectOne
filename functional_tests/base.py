@@ -1,6 +1,5 @@
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
-from .server_tools import reset_database
 import sys
 
 
@@ -25,7 +24,8 @@ class FunctionalTest(StaticLiveServerTestCase):
 
     def setUp(self):
         if self.against_staging:
-            reset_database(self.server_host)
+            pass
+            # reset_database(self.server_host)
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(3)
 

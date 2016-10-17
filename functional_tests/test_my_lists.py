@@ -1,18 +1,19 @@
 from django.conf import settings
 from .base import FunctionalTest
-from .server_tools import create_session_on_server
-from .management.commands.create_session import (
-    create_pre_authenticated_session
-)
+from django.utils.six import BytesIO
+from rest_framework.parsers import JSONParser
 
 
 class MyListsTest(FunctionalTest):
 
     def create_pre_authenticated_session(self, email):
-        if self.against_staging:
-            session_key = create_session_on_server(self.server_host, email)
-        else:
-            session_key = create_pre_authenticated_session(email)
+        response = self.client.get(
+            '/rest/session_key/{}/'.format(email),
+        )
+        print(response.content)
+        stream = BytesIO(response.content)
+        data = JSONParser().parse(stream)
+        session_key = data['session_key']
         # To set a cookie we need to first visit the domain
         # 404 pages load the quickest
         self.browser.get(self.server_url + "/404_no_such_url")
